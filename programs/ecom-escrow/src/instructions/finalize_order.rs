@@ -6,10 +6,12 @@ use crate::Order;
 pub struct FinalizeOrder<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
+    /// CHECK: We just need pubkey of reciever
+    pub reciever: UncheckedAccount<'info>,
     #[account(
         mut, 
         close = user,
-        seeds = [b"order", user.key().as_ref(), order.order_id.as_bytes()],
+        seeds = [b"order", reciever.key().as_ref(), order.order_id.as_bytes()],
         bump = order.bump
     )]
     pub order: Account<'info, Order>,
