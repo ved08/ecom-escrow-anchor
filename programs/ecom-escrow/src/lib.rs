@@ -15,15 +15,17 @@ declare_id!("HjJQRt9aZ21yzVqoVx9qaGsTukk3CnodmmE1yqkwqRYA");
 pub mod ecom_escrow {
     use super::*;
 
-    pub fn create_order(ctx: Context<CreateOrder>) -> Result<()> {
-    
+    pub fn create_order(ctx: Context<CreateOrder>, order_id: String, amount: u64) -> Result<()> {
+        ctx.accounts.create_order(order_id, amount, &ctx.bumps)?;
         Ok(())
     }
-    // pub fn cancel_order(ctx: Context<CancelOrder>) -> Result<()> {
-    //     Ok(())
-    // }
-    // pub fn finalize_order(ctx: Context<FinalizeOrder>) -> Result<()> {
-    //     Ok(())
-    // }
+    pub fn cancel_order(ctx: Context<CancelOrder>) -> Result<()> {
+        ctx.accounts.cancel_order()?;
+        Ok(())
+    }
+    pub fn finalize_order(ctx: Context<FinalizeOrder>) -> Result<()> {
+        ctx.accounts.finalize_order()?;
+        Ok(())
+    }
     
 }

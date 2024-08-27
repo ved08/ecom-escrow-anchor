@@ -8,5 +8,6 @@ pub struct Order {
     #[max_len(20)] /// TBD BASED ON db_id
     pub order_id: String,
     pub seller: Pubkey,
-    pub bump: u8
+    pub bump: u8,
+    pub vault_bump: u8,
 }
