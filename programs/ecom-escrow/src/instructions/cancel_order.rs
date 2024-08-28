@@ -1,6 +1,7 @@
 use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
 use crate::Order;
+use crate::error::ErrorCode::RecieverNotAuthorized;
 
 #[derive(Accounts)]
 pub struct CancelOrder<'info> {
@@ -24,6 +25,10 @@ pub struct CancelOrder<'info> {
 
 impl <'info> CancelOrder<'info> {
     pub fn cancel_order(&mut self) -> Result<()> {
+
+        // TODO: ADD SELLER SIDE CONDITION
+        require_keys_eq!(self.user.key(), self.order.reciever.key(), RecieverNotAuthorized);
+
         let amount = self.order_vault.to_account_info().lamports();
         let binding = [self.order.bump];
         let signer_seeds = &[&[

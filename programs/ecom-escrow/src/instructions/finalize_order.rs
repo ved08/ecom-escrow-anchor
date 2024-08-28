@@ -1,6 +1,7 @@
 use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
 use crate::Order;
+use crate::error::ErrorCode::SellerNotAuthorized;
 
 #[derive(Accounts)]
 pub struct FinalizeOrder<'info> {
@@ -26,6 +27,13 @@ pub struct FinalizeOrder<'info> {
 
 impl <'info> FinalizeOrder<'info> {
     pub fn finalize_order(&mut self) -> Result<()> {
+
+        // TODO: ADD RECIEVER CHECK
+        require_keys_eq!(self.user.key(), self.order.seller.key(), SellerNotAuthorized);
+
+
+
+
         let amount = self.order_vault.to_account_info().lamports();
         let binding = [self.order.bump];
         let signer_seeds = &[&[
