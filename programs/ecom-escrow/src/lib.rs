@@ -19,12 +19,12 @@ pub mod ecom_escrow {
         ctx.accounts.create_order(order_id, amount, &ctx.bumps)?;
         Ok(())
     }
-    pub fn cancel_order(ctx: Context<CancelOrder>) -> Result<()> {
-        ctx.accounts.cancel_order()?;
+    pub fn cancel_order(ctx: Context<CancelOrder>, order_id: String) -> Result<()> {
+        ctx.accounts.cancel_order(order_id)?;
         Ok(())
     }
-    pub fn finalize_order(ctx: Context<FinalizeOrder>) -> Result<()> {
-        ctx.accounts.finalize_order()?;
+    pub fn finalize_order(ctx: Context<FinalizeOrder>, order_id: String) -> Result<()> {
+        ctx.accounts.finalize_order(order_id)?;
         Ok(())
     }
 }

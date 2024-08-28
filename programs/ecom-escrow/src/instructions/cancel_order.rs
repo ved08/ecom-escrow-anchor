@@ -3,7 +3,7 @@ use anchor_lang::{
     system_program::{transfer, Transfer},
 };
 
-use crate::error::ErrorCode::RecieverNotAuthorized;
+use crate::error::ErrorCode::*;
 use crate::Order;
 
 #[derive(Accounts)]
@@ -20,27 +20,27 @@ pub struct CancelOrder<'info> {
     #[account(
         mut,
         seeds = [b"orderVault", order.key().as_ref()],
-        bump
+        bump = order.vault_bump
     )]
     pub order_vault: SystemAccount<'info>,
     pub system_program: Program<'info, System>,
 }
 
 impl<'info> CancelOrder<'info> {
-    pub fn cancel_order(&mut self) -> Result<()> {
+    pub fn cancel_order(&mut self, order_id: String) -> Result<()> {
         // TODO: ADD SELLER SIDE CONDITION
         require_keys_eq!(
             self.user.key(),
             self.order.reciever.key(),
             RecieverNotAuthorized
         );
+        require_eq!(self.order.order_id.clone(), order_id, OrderIdMismatch);
 
         let amount = self.order_vault.to_account_info().lamports();
-        let binding = [self.order.bump];
+        let binding = [self.order.vault_bump];
         let signer_seeds = &[&[
-            b"order",
-            self.user.to_account_info().key.as_ref(),
-            self.order.order_id.as_bytes(),
+            b"orderVault",
+            self.order.to_account_info().key.as_ref(),
             &binding,
         ][..]];
         let accounts = Transfer {

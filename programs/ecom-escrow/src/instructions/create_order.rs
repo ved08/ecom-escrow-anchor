@@ -25,7 +25,7 @@ pub struct CreateOrder<'info> {
         bump
     )]
     pub order_vault: SystemAccount<'info>,
-    /// CHECK: We just need pubkey of seller
+    /// CHECK: We just need this to store seller details 
     pub seller: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
 }
@@ -37,6 +37,8 @@ impl<'info> CreateOrder<'info> {
         amount: u64,
         bumps: &CreateOrderBumps,
     ) -> Result<()> {
+        let rent = Rent::get()?;
+        let min_rent = rent.minimum_balance(0);
         self.order.set_inner(Order {
             reciever: self.user.key(),
             amount,
@@ -47,10 +49,10 @@ impl<'info> CreateOrder<'info> {
         });
         let accounts = Transfer {
             from: self.user.to_account_info(),
-            to: self.order.to_account_info(),
+            to: self.order_vault.to_account_info(),
         };
         let cpi_ctx = CpiContext::new(self.system_program.to_account_info(), accounts);
-        transfer(cpi_ctx, amount)?;
+        transfer(cpi_ctx, amount + min_rent)?;
         Ok(())
     }
 }

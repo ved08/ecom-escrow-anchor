@@ -6,4 +6,6 @@ pub enum ErrorCode {
     SellerNotAuthorized,
     #[msg("Reciever not authorized")]
     RecieverNotAuthorized,
+    #[msg("Order id mismatch")]
+    OrderIdMismatch
 }

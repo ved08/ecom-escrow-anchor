@@ -3,12 +3,13 @@ use anchor_lang::{
     system_program::{transfer, Transfer},
 };
 
-use crate::error::ErrorCode::SellerNotAuthorized;
+use crate::error::ErrorCode::*;
 use crate::Order;
 
 #[derive(Accounts)]
 pub struct FinalizeOrder<'info> {
     #[account(mut)]
+    // This is the seller
     pub user: Signer<'info>,
     /// CHECK: We just need pubkey of reciever
     pub reciever: UncheckedAccount<'info>,
@@ -29,20 +30,28 @@ pub struct FinalizeOrder<'info> {
 }
 
 impl<'info> FinalizeOrder<'info> {
-    pub fn finalize_order(&mut self) -> Result<()> {
+    pub fn finalize_order(&mut self, order_id: String) -> Result<()> {
         // TODO: ADD RECIEVER CHECK
         require_keys_eq!(
             self.user.key(),
             self.order.seller.key(),
             SellerNotAuthorized
         );
+        require_keys_eq!(
+            self.reciever.key(),
+            self.order.reciever.key(),
+            RecieverNotAuthorized
+        );
+        require_eq!(
+            self.order.order_id.clone(), 
+            order_id, OrderIdMismatch
+        );
 
         let amount = self.order_vault.to_account_info().lamports();
-        let binding = [self.order.bump];
+        let binding = [self.order.vault_bump];
         let signer_seeds = &[&[
-            b"order",
-            self.user.to_account_info().key.as_ref(),
-            self.order.order_id.as_bytes(),
+            b"orderVault",
+            self.order.to_account_info().key.as_ref(),
             &binding,
         ][..]];
         let accounts = Transfer {
