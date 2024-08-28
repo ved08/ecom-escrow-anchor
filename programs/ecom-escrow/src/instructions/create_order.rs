@@ -1,14 +1,16 @@
-use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
+use anchor_lang::{
+    prelude::*,
+    system_program::{transfer, Transfer},
+};
 
 use crate::Order;
-
 
 #[derive(Accounts)]
 #[instruction(order_id: String)]
 pub struct CreateOrder<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
-    
+
     #[account(
         init,
         payer = user,
@@ -28,8 +30,13 @@ pub struct CreateOrder<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl <'info> CreateOrder<'info> {
-    pub fn create_order(&mut self, order_id: String, amount: u64, bumps: &CreateOrderBumps) -> Result<()> {
+impl<'info> CreateOrder<'info> {
+    pub fn create_order(
+        &mut self,
+        order_id: String,
+        amount: u64,
+        bumps: &CreateOrderBumps,
+    ) -> Result<()> {
         self.order.set_inner(Order {
             reciever: self.user.key(),
             amount,

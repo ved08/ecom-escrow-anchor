@@ -27,5 +27,4 @@ pub mod ecom_escrow {
         ctx.accounts.finalize_order()?;
         Ok(())
     }
-    
 }

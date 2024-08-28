@@ -1,7 +1,10 @@
-use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
+use anchor_lang::{
+    prelude::*,
+    system_program::{transfer, Transfer},
+};
 
-use crate::Order;
 use crate::error::ErrorCode::RecieverNotAuthorized;
+use crate::Order;
 
 #[derive(Accounts)]
 pub struct CancelOrder<'info> {
@@ -23,27 +26,34 @@ pub struct CancelOrder<'info> {
     pub system_program: Program<'info, System>,
 }
 
-impl <'info> CancelOrder<'info> {
+impl<'info> CancelOrder<'info> {
     pub fn cancel_order(&mut self) -> Result<()> {
-
         // TODO: ADD SELLER SIDE CONDITION
-        require_keys_eq!(self.user.key(), self.order.reciever.key(), RecieverNotAuthorized);
+        require_keys_eq!(
+            self.user.key(),
+            self.order.reciever.key(),
+            RecieverNotAuthorized
+        );
 
         let amount = self.order_vault.to_account_info().lamports();
         let binding = [self.order.bump];
         let signer_seeds = &[&[
-         b"order",
-         self.user.to_account_info().key.as_ref(),
-         self.order.order_id.as_bytes(),
-         &binding,
+            b"order",
+            self.user.to_account_info().key.as_ref(),
+            self.order.order_id.as_bytes(),
+            &binding,
         ][..]];
         let accounts = Transfer {
             from: self.order_vault.to_account_info(),
             to: self.user.to_account_info(),
         };
-        let cpi_ctx = CpiContext::new_with_signer(self.system_program.to_account_info(), accounts, signer_seeds);
+        let cpi_ctx = CpiContext::new_with_signer(
+            self.system_program.to_account_info(),
+            accounts,
+            signer_seeds,
+        );
         transfer(cpi_ctx, amount)?;
-        
+
         Ok(())
     }
 }
