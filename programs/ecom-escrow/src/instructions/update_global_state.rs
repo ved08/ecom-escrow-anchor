@@ -6,6 +6,7 @@ pub struct UpdateGlobalState<'info> {
     #[account(mut, address = ADMIN)]
     pub admin: Signer<'info>,
     #[account(
+        mut,
         seeds = [b"global"],
         bump = global_state.bump
     )]
@@ -16,7 +17,6 @@ pub struct UpdateGlobalState<'info> {
 impl <'info> UpdateGlobalState<'info> {
     pub fn update_fee(&mut self, protocol_fee: u16) -> Result<()>{
         self.global_state.protocol_fee = protocol_fee;
-
         Ok(())
     }
 }

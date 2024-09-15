@@ -14,7 +14,14 @@ declare_id!("HjJQRt9aZ21yzVqoVx9qaGsTukk3CnodmmE1yqkwqRYA");
 #[program]
 pub mod ecom_escrow {
     use super::*;
-
+    pub fn init_global_state(ctx: Context<InitGlobalState>) -> Result<()> {
+        ctx.accounts.init_global_state(ctx.bumps.global_state)?;
+        Ok(())
+    }
+    pub fn update_global_state(ctx: Context<UpdateGlobalState>, fee: u16) -> Result<()> {
+        ctx.accounts.update_fee(fee)?;
+        Ok(())
+    }
     pub fn create_order(ctx: Context<CreateOrder>, order_id: String, amount: u64) -> Result<()> {
         ctx.accounts.create_order(order_id, amount, &ctx.bumps)?;
         Ok(())

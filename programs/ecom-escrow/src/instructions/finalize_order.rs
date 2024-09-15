@@ -32,7 +32,7 @@ pub struct FinalizeOrder<'info> {
     )]
     pub global_state: Account<'info, GlobalState>,
     #[account(mut)]
-    // CHECK: ADMIN VERIFICATION IS DONE IN INSTRUCTION
+    /// CHECK: ADMIN VERIFICATION IS DONE IN INSTRUCTION
     pub admin: UncheckedAccount<'info>,
     pub system_program: Program<'info, System>,
 }

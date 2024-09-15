@@ -11,7 +11,7 @@ ecom_escrow = "HjJQRt9aZ21yzVqoVx9qaGsTukk3CnodmmE1yqkwqRYA"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
