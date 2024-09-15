@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::OrderStatus;
+
 #[account]
 #[derive(InitSpace)]
 pub struct Order {
@@ -11,4 +13,14 @@ pub struct Order {
     pub seller: Pubkey,
     pub bump: u8,
     pub vault_bump: u8,
+    // ARE WE SUPPOSED TO DO THIS?
+    pub status: OrderStatus,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct GlobalState {
+    pub protocol_fee: u16,
+    pub admin: Pubkey,
+    pub bump: u8,
 }

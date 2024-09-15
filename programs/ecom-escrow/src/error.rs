@@ -7,5 +7,7 @@ pub enum ErrorCode {
     #[msg("Reciever not authorized")]
     RecieverNotAuthorized,
     #[msg("Order id mismatch")]
-    OrderIdMismatch
+    OrderIdMismatch,
+    #[msg("You are not the admin")]
+    AdminMismatch,
 }

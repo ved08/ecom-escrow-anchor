@@ -3,7 +3,7 @@ use anchor_lang::{
     system_program::{transfer, Transfer},
 };
 
-use crate::Order;
+use crate::{Order, OrderStatus};
 
 #[derive(Accounts)]
 #[instruction(order_id: String)]
@@ -46,6 +46,7 @@ impl<'info> CreateOrder<'info> {
             seller: self.seller.key(),
             bump: bumps.order,
             vault_bump: bumps.order_vault,
+            status: OrderStatus::PROCESSING,
         });
         let accounts = Transfer {
             from: self.user.to_account_info(),
